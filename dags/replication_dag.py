@@ -5,7 +5,6 @@ from pymongo import MongoClient
 from bson import ObjectId
 import json
 from datetime import datetime
-import os
 
 # Подключение к MongoDB через Airflow Connection
 from airflow.hooks.base import BaseHook
