@@ -1,0 +1,66 @@
+-- Таблица сессий пользователей
+CREATE TABLE UserSessions (
+    session_id TEXT PRIMARY KEY,
+    user_id TEXT,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    pages_visited TEXT[],
+    device TEXT,
+    actions TEXT[]
+);
+
+-- Таблица истории цен
+CREATE TABLE ProductPriceHistory (
+    product_id TEXT PRIMARY KEY,
+    price_changes JSONB,
+    current_price NUMERIC(10,2),
+    currency TEXT
+);
+
+-- Таблица логов событий
+CREATE TABLE EventLogs (
+    event_id TEXT PRIMARY KEY,
+    timestamp TIMESTAMP,
+    event_type TEXT,
+    details TEXT
+);
+
+-- Таблица обращений в поддержку
+CREATE TABLE SupportTickets (
+    ticket_id TEXT PRIMARY KEY,
+    user_id TEXT,
+    status TEXT,
+    issue_type TEXT,
+    messages TEXT[],
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+-- Таблица рекомендаций пользователям
+CREATE TABLE UserRecommendations (
+    user_id TEXT PRIMARY KEY,
+    recommended_products TEXT[],
+    last_updated TIMESTAMP
+);
+
+-- Таблица модерации отзывов
+CREATE TABLE ModerationQueue (
+    review_id TEXT PRIMARY KEY,
+    user_id TEXT,
+    product_id TEXT,
+    review_text TEXT,
+    rating INT,
+    moderation_status TEXT,
+    flags TEXT[],
+    submitted_at TIMESTAMP
+);
+
+-- Таблица поисковых запросов
+CREATE TABLE SearchQueries (
+    query_id TEXT PRIMARY KEY,
+    user_id TEXT,
+    query_text TEXT,
+    timestamp TIMESTAMP,
+    filters JSONB,
+    results_count INT
+);
