@@ -1,74 +1,74 @@
-# 📌 Проект: ETL-пайплайн с Apache Airflow, PostgreSQL и MongoDB
+# 📌 Project: ETL Pipeline with Apache Airflow, PostgreSQL, and MongoDB
 
-## 📌 Описание проекта
-Данный проект представляет собой **ETL-процесс**, реализованный с помощью **Apache Airflow**, **PostgreSQL** и **MongoDB**. В рамках проекта настроена **репликация данных** из MongoDB в PostgreSQL, а также построены **аналитические витрины** для анализа пользовательской активности и эффективности службы поддержки.
-
----
-## 🛠 Используемые технологии
-- **Apache Airflow** – для автоматизации ETL-процессов.
-- **MongoDB** – хранение исходных данных (NoSQL).
-- **PostgreSQL** – для аналитики и хранения структурированных данных.
-- **Python** – написание DAGs для Airflow.
-- **Docker (по желанию)** – развертывание инфраструктуры.
+## 📌 Project Description
+This project is an **ETL process** implemented using **Apache Airflow**, **PostgreSQL**, and **MongoDB**. It sets up **data replication** from MongoDB to PostgreSQL and builds **analytical dashboards** to analyze user activity and support service performance.
 
 ---
-## 📂 Структура проекта
+## 🛠 Technologies Used
+- **Apache Airflow** – to automate ETL processes.
+- **MongoDB** – to store source data (NoSQL).
+- **PostgreSQL** – for analytics and storing structured data.
+- **Python** – to write DAGs for Airflow.
+- **Docker (optional)** – for deploying the infrastructure.
+
+---
+## 📂 Project Structure
 ```
 📁 airflow/
  ├── dags/
- │   ├── replication_dag.py        # DAG для репликации данных из MongoDB в PostgreSQL
- │   ├── update_analytics_dag.py   # DAG для обновления аналитических витрин
+ │   ├── replication_dag.py        # DAG for data replication from MongoDB to PostgreSQL
+ │   ├── update_analytics_dag.py   # DAG for updating analytical dashboards
 📁 database/
- ├── schema_postgres.sql           # Создание таблиц в PostgreSQL
- ├── create_showcases_postgres.sql # Создание аналитических витрин в PostgreSQL
+ ├── schema_postgres.sql           # Table creation in PostgreSQL
+ ├── create_showcases_postgres.sql # Analytical dashboards creation in PostgreSQL
 📁 scripts/
- ├── data_generation.py            # Генерация тестовых данных
+ ├── data_generation.py            # Test data generation
 📁 docs/
- ├── README.md                     # Этот файл
+ ├── README.md                     # This file
 ```
 
 ---
-## 📝 Описание процессов
+## 📝 Process Description
 
-### **1️⃣ Генерация данных**
-- Создаются коллекции в **MongoDB**:
-  - `UserSessions` – сессии пользователей.
-  - `ProductPriceHistory` – история изменения цен.
-  - `EventLogs` – логи событий.
-  - `SupportTickets` – обращения в поддержку.
-  - `UserRecommendations` – рекомендации.
-  - `ModerationQueue` – модерация отзывов.
-  - `SearchQueries` – поисковые запросы.
+### **1️⃣ Data Generation**
+- Collections created in **MongoDB**:
+  - `UserSessions` – user sessions.
+  - `ProductPriceHistory` – price change history.
+  - `EventLogs` – event logs.
+  - `SupportTickets` – support tickets.
+  - `UserRecommendations` – recommendations.
+  - `ModerationQueue` – review moderation.
+  - `SearchQueries` – search queries.
 
-🔹 **Файл**:
-- `data_generation.py` – генерация тестовых данных.
+🔹 **File**:
+- `data_generation.py` – generates test data.
 
-### **2️⃣ Репликация данных в PostgreSQL**
-- Данные из **MongoDB** переносятся в **PostgreSQL** с использованием **Airflow DAG (`replication_dag.py`)**.
-- Обрабатываются:
+### **2️⃣ Data Replication to PostgreSQL**
+- Data from **MongoDB** is transferred to **PostgreSQL** using **Airflow DAG (`replication_dag.py`)**.
+- Conversions handled:
   - `ObjectId` → `string`
   - `datetime` → `ISO 8601`
   - `lists` → `PostgreSQL ARRAY`
 
-🔹 **Файл**: `replication_dag.py`
+🔹 **File**: `replication_dag.py`
 
-### **3️⃣ Создание аналитических витрин**
-- Витрина **`user_activity_summary`** – анализирует активность пользователей.
-- Витрина **`support_performance`** – анализирует эффективность службы поддержки.
-- DAG **`update_analytics_dag.py`** пересчитывает данные ежедневно.
+### **3️⃣ Creating Analytical Dashboards**
+- Dashboard **`user_activity_summary`** – analyzes user activity.
+- Dashboard **`support_performance`** – analyzes support service performance.
+- DAG **`update_analytics_dag.py`** recalculates data daily.
 
-🔹 **Файл**: `update_analytics_dag.py`
+🔹 **File**: `update_analytics_dag.py`
 🔹 **SQL**:
-- `create_showcases_postgres.sql` – скрипт создания аналитических витрин.
+- `create_showcases_postgres.sql` – script to create dashboards.
 
 ---
-## 🚀 Запуск проекта
-### **1️⃣ Установка зависимостей**
+## 🚀 Project Launch
+### **1️⃣ Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-### **2️⃣ Запуск Airflow**
+### **2️⃣ Launch Airflow**
 ```bash
 export AIRFLOW_HOME=~/airflow
 airflow db init
@@ -76,37 +76,36 @@ airflow scheduler &
 airflow webserver -p 8080 &
 ```
 
-### **3️⃣ Запуск пайплайнов**
-Перейти в **Airflow UI** (`http://localhost:8080`):
-- Запустить `replication_dag`
-- Запустить `update_analytics_dag`
+### **3️⃣ Run Pipelines**
+Open **Airflow UI** (`http://localhost:8080`):
+- Run `replication_dag`
+- Run `update_analytics_dag`
 
 ---
-## 📊 Анализ данных
-- **ТОП-5 активных пользователей:**
+## 📊 Data Analysis
+- **TOP-5 active users:**
   ```sql
   SELECT user_id, total_sessions, total_pages_visited, total_actions
   FROM user_activity_summary
   ORDER BY total_sessions DESC
   LIMIT 5;
   ```
-- **Среднее время обработки тикетов:**
+- **Average ticket resolution time:**
   ```sql
   SELECT AVG(avg_resolution_time) AS avg_ticket_time FROM support_performance;
   ```
 
 ---
-## 📌 Оценочные критерии
-✅ Развёрнуты базы данных (MongoDB, PostgreSQL)
-✅ Реализована репликация с помощью Airflow
-✅ Данные очищены и поддаются аналитике
-✅ Построены аналитические витрины
-✅ Настроены DAGs в Airflow
-✅ Описан процесс в документации
+## 📌 Evaluation Criteria
+✅ Databases deployed (MongoDB, PostgreSQL)
+✅ Replication implemented via Airflow
+✅ Data cleaned and ready for analytics
+✅ Analytical dashboards built
+✅ DAGs configured in Airflow
+✅ Process described in documentation
 
 ---
-## 🏆 Итог
-Этот проект представляет собой **полноценный ETL-конвейер**, который **автоматизирует сбор, трансформацию и анализ данных**.
+## 🏆 Result
+This project is a **full-fledged ETL pipeline** that **automates data collection, transformation, and analysis**.
 
-🚀 **Готов к развертыванию и масштабированию!**
-
+🚀 **Ready for deployment and scaling!**
